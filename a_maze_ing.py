@@ -1,6 +1,6 @@
 import sys
-from parser import ConfigParser
-from maze import Maze
+from maze.parser import ConfigParser
+from maze.maze import Maze
 
 
 def main():
