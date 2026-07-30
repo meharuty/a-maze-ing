@@ -1,35 +1,27 @@
 import sys
+
 from maze.parser import ConfigParser
 from maze.maze import Maze
+from maze.generator import MazeGenerator
 
 
 def main():
     if len(sys.argv) != 2:
-        print("Usage: python a_maze_ing.py <config_file>")
-        sys.exit(1)
+        print("Usage: python3 a_maze_ing.py <config_file>")
+        return
 
-    config_file = sys.argv[1]
+    parser = ConfigParser(sys.argv[1])
+    config = parser.parse()
 
-    try:
-        parser = ConfigParser(config_file)
-        config = parser.parse()
+    maze = Maze(config["WIDTH"], config["HEIGHT"])
 
-        maze = Maze(
-            width=config["WIDTH"],
-            height=config["HEIGHT"]
-        )
+    generator = MazeGenerator(maze, config["SEED"])
+    generator.generate()
 
-        print("Maze created successfully!")
-        print(f"Width: {maze.width}")
-        print(f"Height: {maze.height}")
-        print(f"Entry: {config['ENTRY']}")
-        print(f"Exit: {config['EXIT']}")
-        print(f"Perfect: {config['PERFECT']}")
-        print(f"Seed: {config['SEED']}")
-
-    except Exception as e:
-        print(f"Error: {e}")
-        sys.exit(1)
+    if generator.validate_dfs():
+        print("Maze generated successfully!")
+    else:
+        print("Generation failed.")
 
 
 if __name__ == "__main__":
