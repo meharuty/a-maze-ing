@@ -22,7 +22,7 @@ def main():
     if generator.validate_dfs():
         print("Maze generated successfully!")
         vis_repr = MazeVisualizer(maze)
-        vis_repr.maze_visualizer()
+        vis_repr.visualize()
     else:
         print("Generation failed.")
 

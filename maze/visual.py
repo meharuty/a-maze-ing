@@ -6,35 +6,46 @@ class MazeVisualizer:
     def __init__(self, maze: Maze):
         self.maze = maze
 
-    def print_north(self, cell: Cell) -> None:
+    def print_top(self, cell: Cell) -> None:
         if cell.north:
-            print("\u2588", end="")
+            print("██", end="")
         else:
-            print(" ", end="")
+            print("  ", end="")
 
-    def print_south(self, cell: Cell) -> None:
+    def print_bottom(self, cell: Cell) -> None:
         if cell.south:
-            print("\u2588", end="")
+            print("██", end="")
         else:
-            print(" ", end="")
+            print("  ", end="")
 
-    def print_west(self, cell: Cell) -> None:
+    def print_left(self, cell: Cell) -> None:
         if cell.west:
-            print("\u2588", end="")
+            print("█", end="")
         else:
             print(" ", end="")
 
-    def print_east(self, cell: Cell) -> None:
+    def print_right(self, cell: Cell) -> None:
         if cell.east:
-            print("\u2588", end="")
+            print("█", end="")
         else:
             print(" ", end="")
 
-    def maze_visualizer(self) -> None:
+    def visualize(self) -> None:
         for row in self.maze.grid:
+
+            # Top walls
             for cell in row:
-                self.print_north(cell)
-                self.print_west(cell)
+                self.print_top(cell)
+            print()
+
+            # Left/right walls
+            for cell in row:
+                self.print_left(cell)
                 print(" ", end="")
-                self.print_east(cell)
-                self.print_south(cell)
+                self.print_right(cell)
+            print()
+
+            # Bottom walls
+            for cell in row:
+                self.print_bottom(cell)
+            print()
