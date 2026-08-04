@@ -36,3 +36,10 @@ class MazeGenerator:
                 if not (cell.visited):
                     return False
         return True
+
+    def for_non_perfect(self) -> None:
+        for row in self.maze.grid:
+            for cell in row:
+                for neighbour in self.maze.neighbors(cell):
+                    if self.random.random() < 0.1:
+                        self.maze.remove_wall(cell, neighbour)
