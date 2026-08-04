@@ -14,14 +14,18 @@ class MazeGenerator:
 
     def _visit(self, cell: Cell):
         cell.visited = True
+        stack = [cell]
 
-        while True:
-            neighbors = self.unvisited_neighbors(cell)
+        while stack:
+            current = stack[-1]
+            neighbors = self.unvisited_neighbors(current)
             if not neighbors:
-                break
-            neighbor = self.random.choice(neighbors)
-            self.maze.remove_wall(cell, neighbor)
-            self._visit(neighbor)
+                stack.pop()
+            else:
+                neighbor = self.random.choice(neighbors)
+                neighbor.visited = True
+                self.maze.remove_wall(current, neighbor)
+                stack.append(neighbor)
 
     def unvisited_neighbors(self, cell):
         return [

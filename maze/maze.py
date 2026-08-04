@@ -43,6 +43,22 @@ class Maze:
 
         return neighbors
 
+    def get_neighbors_open(self, cell: Cell) -> list[Cell]:
+        neighb = self.neighbors(cell)
+        valid = []
+        for neighbor in neighb:
+            dx = neighbor.x - cell.x
+            dy = neighbor.y - cell.y
+        if dx == 1 and not cell.east:
+            valid.append(neighbor)
+        elif dx == -1 and not cell.west:
+            valid.append(neighbor)
+        elif dy == 1 and not cell.south:
+            valid.append(neighbor)
+        elif dy == -1 and not cell.north:
+            valid.append(neighbor)
+        return valid
+
     def remove_wall(self, first: Cell, second: Cell) -> None:
         dx = second.x - first.x
         dy = second.y - first.y
