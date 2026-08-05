@@ -44,6 +44,15 @@ class MazeGenerator:
     def for_non_perfect(self) -> None:
         for row in self.maze.grid:
             for cell in row:
-                for neighbour in self.maze.neighbors(cell):
+
+                if cell.x + 1 < self.maze.width:
+                    neighbor = self.maze.get_cell(cell.x + 1, cell.y)
+
                     if self.random.random() < 0.1:
-                        self.maze.remove_wall(cell, neighbour)
+                        self.maze.remove_wall(cell, neighbor)
+
+                if cell.y + 1 < self.maze.height:
+                    neighbor = self.maze.get_cell(cell.x, cell.y + 1)
+
+                    if self.random.random() < 0.1:
+                        self.maze.remove_wall(cell, neighbor)

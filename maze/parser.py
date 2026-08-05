@@ -75,32 +75,23 @@ class ConfigParser:
         height = config["HEIGHT"]
         entry = config["ENTRY"]
         exit_ = config["EXIT"]
-        # perfect = config["PERFECT"]
 
-        # Width and height
         if width <= 0:
             raise ValueError("WIDTH must be greater than 0")
 
         if height <= 0:
             raise ValueError("HEIGHT must be greater than 0")
 
-        # Entry
         x, y = entry
         if not (0 <= x < width and 0 <= y < height):
             raise ValueError("ENTRY is outside the maze")
 
-        # Exit
         x, y = exit_
         if not (0 <= x < width and 0 <= y < height):
             raise ValueError("EXIT is outside the maze")
 
-        # Entry and exit must differ
         if entry == exit_:
             raise ValueError("ENTRY and EXIT must be different")
-
-        # PERFECT must be bool
-        # if not isinstance(perfect, bool):
-        #    raise ValueError("PERFECT must be True or False")
 
         return config
 

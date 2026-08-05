@@ -14,18 +14,4 @@ class HexRepr:
                 file.write("\n")
 
     def cell_to_hex(self, cell: Cell) -> str:
-        value = 0
-
-        if cell.north:
-            value |= 1
-
-        if cell.east:
-            value |= 2
-
-        if cell.south:
-            value |= 4
-
-        if cell.west:
-            value |= 8
-
-        return format(value, "X")
+        return format(cell.get_bitmask(), "X")

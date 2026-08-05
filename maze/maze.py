@@ -10,12 +10,12 @@ class Maze:
         self.height = height
 
         self.grid = [
-            [Cell(x, y) for x in range(width)]
-            for y in range(height)
+            [Cell(x, y) for y in range(height)]
+            for x in range(width)
         ]
 
     def get_cell(self, x: int, y: int) -> Cell:
-        return self.grid[y][x]
+        return self.grid[x][y]
 
     def in_bounds(self, x: int, y: int) -> bool:
         return (
@@ -28,10 +28,10 @@ class Maze:
         neighbors = []
 
         directions = [
-            (0, -1),   # North
-            (1, 0),    # East
-            (0, 1),    # South
-            (-1, 0),   # West
+            (0, -1),
+            (1, 0),
+            (0, 1),
+            (-1, 0)
         ]
 
         for dx, dy in directions:
@@ -44,19 +44,24 @@ class Maze:
         return neighbors
 
     def get_neighbors_open(self, cell: Cell) -> list[Cell]:
-        neighb = self.neighbors(cell)
         valid = []
-        for neighbor in neighb:
+
+        for neighbor in self.neighbors(cell):
             dx = neighbor.x - cell.x
             dy = neighbor.y - cell.y
-        if dx == 1 and not cell.east:
-            valid.append(neighbor)
-        elif dx == -1 and not cell.west:
-            valid.append(neighbor)
-        elif dy == 1 and not cell.south:
-            valid.append(neighbor)
-        elif dy == -1 and not cell.north:
-            valid.append(neighbor)
+
+            if dx == 1 and not cell.east:
+                valid.append(neighbor)
+
+            elif dx == -1 and not cell.west:
+                valid.append(neighbor)
+
+            elif dy == 1 and not cell.south:
+                valid.append(neighbor)
+
+            elif dy == -1 and not cell.north:
+                valid.append(neighbor)
+
         return valid
 
     def remove_wall(self, first: Cell, second: Cell) -> None:
