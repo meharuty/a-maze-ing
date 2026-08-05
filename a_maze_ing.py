@@ -3,7 +3,7 @@ import sys
 from maze.parser import ConfigParser
 from maze.maze import Maze
 from maze.generator import MazeGenerator
-from maze.visual import MazeVisualizer
+# from maze.visual import MazeVisualizer
 from maze.maze_hexadecimal import HexRepr
 from maze.solution import bfs, path_to_directions
 from maze.display import MazeDisplay
@@ -30,8 +30,8 @@ def main():
 
     print("Maze generated successfully!")
 
-    vis_repr = MazeVisualizer(maze)
-    vis_repr.visualize()
+    # vis_repr = MazeVisualizer(maze)
+    # vis_repr.visualize()
 
     entry_x, entry_y = config["ENTRY"]
     exit_x, exit_y = config["EXIT"]
@@ -57,12 +57,17 @@ def main():
         file.write(solution + "\n")
 
     print("Shortest path:", solution)
-    for current, next_cell in zip(path, path[1:]):
+    """for current, next_cell in zip(path, path[1:]):
         print(
             f"({current.x}, {current.y})"
             f" -> "
             f"({next_cell.x}, {next_cell.y})"
-        )
+        )"""
+    MazeDisplay.preview(
+        maze,
+        entry,
+        exit
+    )
 
 
 if __name__ == "__main__":

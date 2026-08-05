@@ -1,12 +1,13 @@
 from collections import deque
+from maze.cell import Cell
 
 
 class MazeDisplay:
     @staticmethod
     def ascii(maze, entry=None, exit=None, show_path=False) -> str:
-        path_cells =set()
-        if show_path and entry and exit:
-            path_cells = MazeDisplay.find_path(maze, entry, exit)
+        path_cells = set()
+        #if show_path and entry and exit:
+        #    path_cells = MazeDisplay.find_path(maze, entry, exit)
         result = []
         result.append("+" + "---+" * maze.width)
         for y in range(maze.height):
@@ -32,7 +33,8 @@ class MazeDisplay:
                     bottom += "   +"
             result.append(bottom)
         return "\n".join(result)
-    @staticmethod
+
+    """@staticmethod
     def find_path(maze, start, end) -> set:
         start_cell = maze.get_cell(start[0], start[1])
         end_cell = maze.get_cell(end[0], end[1])
@@ -59,10 +61,12 @@ class MazeDisplay:
                     if can_move:
                         visited.add((nx, ny))
                         queue.append((neighbor, path + [(current.x, current.y)]))
-        return set()
+        return set()"""
 
     @staticmethod
-    def print_ascii(maze, entry=None, exit=None, show_path=False) -> None:
+    def print_ascii(maze, entry: Cell, exit: Cell, show_path=False) -> None:
+        entry = (entry.x, entry.y)
+        exit = (exit.x, exit.y)
         print(MazeDisplay.ascii(maze, entry, exit, show_path))
 
     @staticmethod
