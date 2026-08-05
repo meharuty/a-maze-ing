@@ -6,6 +6,7 @@ from maze.generator import MazeGenerator
 from maze.visual import MazeVisualizer
 from maze.maze_hexadecimal import HexRepr
 from maze.solution import bfs, path_to_directions
+from maze.display import MazeDisplay
 
 
 def main():
