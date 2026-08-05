@@ -8,8 +8,8 @@ class MazeGenerator:
         self.maze = maze
         self.random = random.Random(seed)
 
-    def generate(self) -> None:
-        start = self.maze.grid[0][0]
+    def generate(self, start: Cell) -> None:
+        # start = self.maze.grid[0][0]
         self._visit(start)
 
     def _visit(self, cell: Cell):
