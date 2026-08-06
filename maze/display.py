@@ -1,13 +1,16 @@
-from collections import deque
 from maze.cell import Cell
+from maze.solution import bfs
 
 
 class MazeDisplay:
     @staticmethod
-    def ascii(maze, entry=None, exit=None, show_path=False) -> str:
-        path_cells = set()
-        #if show_path and entry and exit:
-        #    path_cells = MazeDisplay.find_path(maze, entry, exit)
+    def ascii(maze, entry: Cell, exit: Cell, show_path=True) -> str:
+        path_cells = []
+        if show_path and entry and exit:
+            path_cells = bfs(maze, entry, exit)
+            path_cells = [(cell.x, cell.y) for cell in path_cells]
+        entry = (entry.x, entry.y)
+        exit = (exit.x, exit.y)
         result = []
         result.append("+" + "---+" * maze.width)
         for y in range(maze.height):
@@ -34,45 +37,15 @@ class MazeDisplay:
             result.append(bottom)
         return "\n".join(result)
 
-    """@staticmethod
-    def find_path(maze, start, end) -> set:
-        start_cell = maze.get_cell(start[0], start[1])
-        end_cell = maze.get_cell(end[0], end[1])
-        queue = deque([(start_cell, [])])
-        visited = set()
-        visited.add((start_cell.x, start_cell.y))
-        while queue:
-            current, path = queue.popleft()
-            if current.x == end_cell.x and current.y == end_cell.y:
-                return set(path + [(current.x, current.y)])
-            for dx, dy in [(0, -1), (1, 0), (0,1), (-1, 0)]:
-                nx, ny = current.x + dx, current.y + dy
-                if maze.in_bounds(nx, ny) and (nx, ny) not in visited:
-                    neighbor = maze.get_cell(nx, ny)
-                    can_move = False
-                    if dx == 1 and not current.east:
-                        can_move = True
-                    elif dx == -1 and not current.west:
-                        can_move = True
-                    elif dy == 1 and not current.south:
-                        can_move = True
-                    elif dy == -1 and not current.north:
-                        can_move = True
-                    if can_move:
-                        visited.add((nx, ny))
-                        queue.append((neighbor, path + [(current.x, current.y)]))
-        return set()"""
-
     @staticmethod
-    def print_ascii(maze, entry: Cell, exit: Cell, show_path=False) -> None:
-        entry = (entry.x, entry.y)
-        exit = (exit.x, exit.y)
+    def print_ascii(maze, entry: Cell,
+                    exit: Cell, show_path=True) -> None:
         print(MazeDisplay.ascii(maze, entry, exit, show_path))
 
     @staticmethod
-    def preview(maze, entry=None, exit=None, show_path=True) -> None:
+    def preview(maze, entry: Cell, exit: Cell, show_path=True) -> None:
         print("\n" + "="*50)
-        print("🧩  MAZE PREVIEW")
+        print("MAZE PREVIEW")
         print("="*50)
         MazeDisplay.print_ascii(maze, entry, exit, show_path)
         print("="*50 + "\n")
