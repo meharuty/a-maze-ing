@@ -1,7 +1,12 @@
-WIDTH=40
-HEIGHT=40
+WIDTH=10
+WIDTH=15
+HEIGHT=10
+HEIGHT=15
 ENTRY=0,0
-EXIT=39,39
-OUTPUT_FILE=maze.txt
+EXIT=9,9
+OUTPUT_FILE=
 PERFECT=True
-SEED=42
+
+
+#check errors concerning to output file missing and 
+#key duplication/unknown keys

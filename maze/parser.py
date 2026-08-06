@@ -19,6 +19,9 @@ class ConfigParser:
                 for line in lines
                 if line.strip() and not line.strip().startswith("#")
             ]
+            if not lines:
+                raise ValueError("Configuration file is empty.")
+
         return lines
 
     def parse_dict(self) -> dict[str, str]:
@@ -67,6 +70,8 @@ class ConfigParser:
                     dc[key] = False
                 else:
                     raise ValueError("PERFECT must be True or False")
+        if "SEED" not in dc:
+            dc["SEED"] = None
         return dc
 
     def validate_config(self) -> dict:

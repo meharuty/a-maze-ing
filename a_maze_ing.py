@@ -14,7 +14,14 @@ def main():
         return
 
     parser = ConfigParser(sys.argv[1])
-    config = parser.parse()
+    try:
+        config = parser.parse()
+    except FileNotFoundError as error:
+        print(f"Error: {error}")
+        return
+    except ValueError as error:
+        print(f"Error: {error}")
+        return
 
     maze = Maze(config["WIDTH"], config["HEIGHT"])
     generator = MazeGenerator(maze, config["SEED"])
