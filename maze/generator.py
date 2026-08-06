@@ -46,6 +46,7 @@ class MazeGenerator:
 
     def for_non_perfect(self) -> None:
         self.open_corners()
+        self.open_center()
         self.add_loops()
         self.reduce_dead_ends()
 
@@ -67,27 +68,37 @@ class MazeGenerator:
                 self.maze.remove_wall(corner, neighbor)
 
     def add_loops(self, count=2) -> None:
+        candidates = []
+
+        for y in range(self.maze.height):
+            for x in range(self.maze.width):
+                cell = self.maze.get_cell(x, y)
+
+                if x + 1 < self.maze.width:
+                    neighbor = self.maze.get_cell(x + 1, y)
+
+                    if not self.is_open(cell, neighbor):
+                        candidates.append((cell, neighbor))
+
+                if y + 1 < self.maze.height:
+                    neighbor = self.maze.get_cell(x, y + 1)
+
+                    if not self.is_open(cell, neighbor):
+                        candidates.append((cell, neighbor))
+
+        self.random.shuffle(candidates)
+
         added = 0
 
-        for row in self.maze.grid:
-            for cell in row:
+        for cell, neighbor in candidates:
+            if self.creates_large_open_area(cell, neighbor):
+                continue
 
-                if cell.x + 1 < self.maze.width:
-                    neighbor = self.maze.get_cell(cell.x + 1, cell.y)
+            self.maze.remove_wall(cell, neighbor)
+            added += 1
 
-                    if self.random.random() < 0.1:
-                        self.maze.remove_wall(cell, neighbor)
-                        added += 1
-
-                if cell.y + 1 < self.maze.height:
-                    neighbor = self.maze.get_cell(cell.x, cell.y + 1)
-
-                    if self.random.random() < 0.1:
-                        self.maze.remove_wall(cell, neighbor)
-                        added += 1
-
-                if added >= count:
-                    return
+            if added >= count:
+                return
 
     def dead_ends(self):
         result = []
@@ -108,11 +119,42 @@ class MazeGenerator:
 
             cell = self.random.choice(dead_ends)
 
-            neighbors = self.maze.neighbors(cell)
+            candidates = [
+                neighbor
+                for neighbor in self.maze.neighbors(cell)
+                if not self.is_open(cell, neighbor)
+            ]
 
-            if neighbors:
-                neighbor = self.random.choice(neighbors)
+            self.random.shuffle(candidates)
+
+            opened = False
+
+            for neighbor in candidates:
+                if self.creates_large_open_area(cell, neighbor):
+                    continue
+
                 self.maze.remove_wall(cell, neighbor)
+                opened = True
+                break
+
+            if not opened:
+                break
+
+    def open_center(self) -> None:
+        center_x = self.maze.width // 2
+        center_y = self.maze.height // 2
+
+        center = self.maze.get_cell(center_x, center_y)
+
+        neighbors = [
+            neighbor
+            for neighbor in self.maze.neighbors(center)
+            if not self.is_open(center, neighbor)
+        ]
+
+        if neighbors:
+            neighbor = self.random.choice(neighbors)
+            self.maze.remove_wall(center, neighbor)
 
     def degree(self, cell: Cell) -> int:
         degree = 0
@@ -130,3 +172,63 @@ class MazeGenerator:
             degree += 1
 
         return degree
+
+    def is_open(self, first: Cell, second: Cell) -> bool:
+        dx = second.x - first.x
+        dy = second.y - first.y
+
+        if dx == 1:
+            return not first.east
+
+        if dx == -1:
+            return not first.west
+
+        if dy == 1:
+            return not first.south
+
+        if dy == -1:
+            return not first.north
+
+        return False
+
+    def creates_large_open_area(
+        self,
+        first: Cell,
+        second: Cell
+    ) -> bool:
+        self.maze.remove_wall(first, second)
+
+        result = False
+
+        for y in range(self.maze.height - 2):
+            for x in range(self.maze.width - 2):
+
+                if self.is_open_area_3x3(x, y):
+                    result = True
+                    break
+
+            if result:
+                break
+
+        self.maze.add_wall(first, second)
+
+        return result
+
+    def is_open_area_3x3(self, start_x: int, start_y: int) -> bool:
+        for y in range(start_y, start_y + 3):
+            for x in range(start_x, start_x + 2):
+                first = self.maze.get_cell(x, y)
+                second = self.maze.get_cell(x + 1, y)
+
+                if not self.is_open(first, second):
+                    return False
+
+        for y in range(start_y, start_y + 2):
+            for x in range(start_x, start_x + 3):
+                first = self.maze.get_cell(x, y)
+                second = self.maze.get_cell(x, y + 1)
+
+                if not self.is_open(first, second):
+                    return False
+
+        return True
