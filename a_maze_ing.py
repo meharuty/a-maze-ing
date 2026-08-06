@@ -3,7 +3,6 @@ import sys
 from maze.parser import ConfigParser
 from maze.maze import Maze
 from maze.generator import MazeGenerator
-# from maze.visual import MazeVisualizer
 from maze.maze_hexadecimal import HexRepr
 from maze.solution import bfs, path_to_directions
 from maze.display import MazeDisplay
@@ -19,19 +18,13 @@ def main():
 
     maze = Maze(config["WIDTH"], config["HEIGHT"])
     generator = MazeGenerator(maze, config["SEED"])
-    generator.generate()
-
-    if not config["PERFECT"]:
-        generator.for_non_perfect()
+    generator.generate(config["PERFECT"])
 
     if not generator.validate_dfs():
         print("Generation failed.")
         return
 
     print("Maze generated successfully!")
-
-    # vis_repr = MazeVisualizer(maze)
-    # vis_repr.visualize()
 
     entry_x, entry_y = config["ENTRY"]
     exit_x, exit_y = config["EXIT"]
