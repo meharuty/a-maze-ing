@@ -22,6 +22,9 @@ def main():
     except ValueError as error:
         print(f"Error: {error}")
         return
+    except FileExistsError as error:
+        print(f"Error: {error}")
+        return
 
     maze = Maze(config["WIDTH"], config["HEIGHT"])
     generator = MazeGenerator(maze, config["SEED"])

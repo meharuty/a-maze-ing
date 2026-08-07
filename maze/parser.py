@@ -32,7 +32,11 @@ class ConfigParser:
             key, value = line.split("=", 1)
             key = key.strip()
             value = value.strip()
+            if key in dc:
+                raise ValueError("Duplicate key")
             dc[key] = value
+        if not dc["OUTPUT_FILE"]:
+            raise FileExistsError  # maybe I will find better erropr kind
 
         return dc
 
@@ -42,7 +46,15 @@ class ConfigParser:
             'ENTRY', 'EXIT',
             'OUTPUT_FILE', 'PERFECT'
         ]
+        arr2 = [
+            'WIDTH', 'HEIGHT',
+            'ENTRY', 'EXIT',
+            'OUTPUT_FILE', 'PERFECT', 'SEED'
+        ]
         result = all(key in dc for key in arr)
+        for key in dc:
+            if key not in arr2:
+                raise ValueError("Unknown key")
         return result
 
     def dict_optimization(self) -> dict:
