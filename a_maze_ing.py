@@ -90,7 +90,11 @@ q - Quit""")
             MazeDisplay.preview(maze, entry, exit, show_path)
 
         if choice == 'c':
-            print("Colors are not ready. Add them tos display.py")
+            inp = int(input("Choose one of this colors (1-5)\n"))
+            if inp not in [1, 2, 3, 4, 5]:
+                print("WRONG CHOICE!!!")
+                return
+            MazeDisplay.preview(maze, entry, exit, show_path, inp)
 
 
 if __name__ == "__main__":
