@@ -9,12 +9,9 @@ def regenerate_maze(config: dict, seed: int) -> tuple[Maze, MazeGenerator]:
         config["HEIGHT"]
     )
 
-    seed = seed * random.randint(2, 10)
+    new_seed = seed * random.randint(2, 10)
 
-    generator = MazeGenerator(maze, seed)
-    generator.generate()
-
-    if not config["PERFECT"]:
-        generator.for_non_perfect()
+    generator = MazeGenerator(maze, new_seed)
+    generator.generate(config["PERFECT"])
 
     return maze, generator
