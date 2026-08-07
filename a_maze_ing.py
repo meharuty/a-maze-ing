@@ -6,6 +6,7 @@ from maze.generator import MazeGenerator
 from maze.maze_hexadecimal import HexRepr
 from maze.solution import bfs, path_to_directions
 from maze.display import MazeDisplay
+from maze.regenerator import regenerate_maze
 
 
 def main():
@@ -59,18 +60,37 @@ def main():
         file.write(f"{exit_x},{exit_y}\n")
         file.write(solution + "\n")
 
-    print("Shortest path:", solution)
-    """for current, next_cell in zip(path, path[1:]):
-        print(
-            f"({current.x}, {current.y})"
-            f" -> "
-            f"({next_cell.x}, {next_cell.y})"
-        )"""
     MazeDisplay.preview(
         maze,
         entry,
         exit
     )
+
+    show_path = False
+    choice = ""
+
+    while (choice != 'q'):
+        print("""Choose an action:
+r - Regenerate maze
+p - Show/Hide path
+c - Change wall colour
+q - Quit""")
+
+        choice = input('\n')
+        if choice not in ['r', 'p', 'c', 'q']:
+            print("YOUR CHOICE IS WRONG!")
+            return
+
+        if choice == 'r':
+            maze = regenerate_maze(config)
+            MazeDisplay.preview(maze, entry, exit)
+
+        if choice == 'p':
+            show_path = not show_path
+            MazeDisplay.preview(maze, entry, exit, show_path)
+
+        if choice == 'c':
+            print("Colors are not ready. Add them tos display.py")
 
 
 if __name__ == "__main__":

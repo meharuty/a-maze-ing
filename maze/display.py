@@ -4,7 +4,7 @@ from maze.solution import bfs
 
 class MazeDisplay:
     @staticmethod
-    def ascii(maze, entry: Cell, exit: Cell, show_path=True) -> str:
+    def ascii(maze, entry: Cell, exit: Cell, show_path) -> str:
         path_cells = []
         if show_path and entry and exit:
             path_cells = bfs(maze, entry, exit)
@@ -39,11 +39,11 @@ class MazeDisplay:
 
     @staticmethod
     def print_ascii(maze, entry: Cell,
-                    exit: Cell, show_path=True) -> None:
+                    exit: Cell, show_path=False) -> None:
         print(MazeDisplay.ascii(maze, entry, exit, show_path))
 
     @staticmethod
-    def preview(maze, entry: Cell, exit: Cell, show_path=True) -> None:
+    def preview(maze, entry: Cell, exit: Cell, show_path=False) -> None:
         print("\n" + "="*50)
         print("MAZE PREVIEW")
         print("="*50)
