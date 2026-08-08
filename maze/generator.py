@@ -1,6 +1,7 @@
 import random
 from maze.maze import Maze
 from maze.cell import Cell
+from maze.display import MazeDisplay
 
 
 class MazeGenerator:
@@ -14,6 +15,7 @@ class MazeGenerator:
 
         if not perfect:
             self.for_non_perfect()
+        self.carve_42_pattern()
 
     def _visit(self, cell: Cell):
         cell.visited = True
@@ -232,3 +234,31 @@ class MazeGenerator:
                     return False
 
         return True
+    
+
+    def carve_42_pattern(self) -> None:
+        pattern_cells = MazeDisplay._get_42_pattern_cells(self.maze)
+        if not pattern_cells:
+            print("Warning: Maze too small for '42' pattern - skipping")
+            return
+        for x, y in pattern_cells:
+            cell = self.maze.get_cell(x, y)
+            self._make_cell_closed(cell)
+
+    def _make_cell_closed(self, cell: Cell) -> None:
+        cell.north = True
+        cell.east = True
+        cell.south = True
+        cell.west = True
+        if cell.x > 0:
+            west = self.maze.get_cell(cell.x - 1, cell.y)
+            west.east = True
+        if cell.x + 1 < self.maze.width:
+            east = self.maze.get_cell(cell.x + 1, cell.y)
+            east.west = True
+        if cell.y > 0:
+            north = self.maze.get_cell(cell.x, cell.y - 1)
+            north.south = True
+        if cell.y + 1 < self.maze.height:
+            south = self.maze.get_cell(cell.x, cell.y + 1)
+            south.north = True
