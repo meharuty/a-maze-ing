@@ -1,8 +1,9 @@
 from pathlib import Path
+from typing import Any
 
 
 class ConfigParser:
-    def __init__(self, filename):
+    def __init__(self, filename: str) -> None:
         self.filename = filename
 
     def check(self) -> list[str]:
@@ -57,7 +58,7 @@ class ConfigParser:
                 raise ValueError("Unknown key")
         return result
 
-    def dict_optimization(self) -> dict:
+    def dict_optimization(self) -> dict[str, Any]:
         dc = self.parse_dict()
         if not (self.validate_dict(dc)):
             raise ValueError  # need to be validation error from pydantic
@@ -65,28 +66,28 @@ class ConfigParser:
         for key, value in dc.items():
             if key in ("WIDTH", "HEIGHT", "SEED"):
                 try:
-                    dc[key] = int(value)
+                    dc[key] = int(value)   # type: ignore
                 except ValueError:
                     raise ValueError(f"{key} must be an integer")
 
             elif key in ("ENTRY", "EXIT"):
                 try:
                     x, y = value.split(",")
-                    dc[key] = (int(x.strip()), int(y.strip()))
+                    dc[key] = (int(x.strip()), int(y.strip()))  # type:ignore
                 except ValueError:
                     raise ValueError(f"{key} must be in the format x,y")
             elif key == "PERFECT":
                 if value == "True":
-                    dc[key] = True
+                    dc[key] = True   # type: ignore
                 elif value == "False":
-                    dc[key] = False
+                    dc[key] = False   # type: ignore
                 else:
                     raise ValueError("PERFECT must be True or False")
         if "SEED" not in dc:
-            dc["SEED"] = None
+            dc["SEED"] = None   # type: ignore
         return dc
 
-    def validate_config(self) -> dict:
+    def validate_config(self) -> dict[str, Any]:
         config = self.dict_optimization()
         width = config["WIDTH"]
         height = config["HEIGHT"]
@@ -112,5 +113,5 @@ class ConfigParser:
 
         return config
 
-    def parse(self):
+    def parse(self) -> dict[str, Any]:
         return self.validate_config()

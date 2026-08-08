@@ -9,7 +9,7 @@ from maze.display import MazeDisplay
 from maze.regenerator import regenerate_maze
 
 
-def main():
+def main() -> None:
     if len(sys.argv) != 2:
         print("Usage: python3 a_maze_ing.py <config_file>")
         return
@@ -72,32 +72,34 @@ def main():
 
     show_path = False
     choice = ""
+    col = 1
 
-    while (choice != 'q'):
-        print("""Choose an action:
-r - Regenerate maze
-p - Show/Hide path
-c - Change wall colour
-q - Quit""")
+    while (choice != '4'):
+        print("""=== A-Maze-ing ===
+1. Re-generate a new maze
+2. Show / Hide the shortest path
+3. Rotate the wall colours
+4. Quit""")
 
         choice = input('\n')
-        if choice not in ['r', 'p', 'c', 'q']:
+        if choice not in ['1', '2', '3', '4']:
             print("YOUR CHOICE IS WRONG!")
             return
 
-        if choice == 'r':
+        if choice == '1':
             maze = regenerate_maze(config)
-            MazeDisplay.preview(maze, entry, exit)
+            MazeDisplay.preview(maze=maze, entry=entry, exit=exit, color=col)
 
-        if choice == 'p':
+        if choice == '2':
             show_path = not show_path
-            MazeDisplay.preview(maze, entry, exit, show_path)
+            MazeDisplay.preview(maze, entry, exit, show_path, col)
 
-        if choice == 'c':
-            col = int(input("Choose color (1-5)"))
-            if col not in [1, 2, 3, 4, 5]:
+        if choice == '3':
+            co = input("Choose color (1-5)")
+            if co not in ['1', '2', '3', '4', '5']:
                 print("error")
                 return
+            col = int(co)
             MazeDisplay.preview(maze, entry, exit, show_path, col)
 
 

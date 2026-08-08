@@ -1,9 +1,10 @@
 from maze.generator import MazeGenerator
 import random
 from maze.maze import Maze
+from typing import Any
 
 
-def regenerate_maze(config: dict) -> Maze:
+def regenerate_maze(config: dict[str, Any]) -> Maze:
     maze = Maze(
         config["WIDTH"],
         config["HEIGHT"]

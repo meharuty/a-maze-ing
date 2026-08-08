@@ -1,11 +1,12 @@
 import random
+from typing import Any
 from maze.maze import Maze
 from maze.cell import Cell
 from maze.display import MazeDisplay
 
 
 class MazeGenerator:
-    def __init__(self, maze: Maze, seed: int) -> None:
+    def __init__(self, maze: Maze, seed: Any) -> None:
         self.maze = maze
         self.random = random.Random(seed)
 
@@ -17,7 +18,7 @@ class MazeGenerator:
         if not perfect:
             self.for_non_perfect()
 
-    def _visit(self, cell: Cell):
+    def _visit(self, cell: Cell) -> None:
         pattern_cells = MazeDisplay._get_42_pattern_cells(self.maze)
         for x, y in pattern_cells:
             pattern_cell = self.maze.get_cell(x, y)
@@ -36,7 +37,7 @@ class MazeGenerator:
                 self.maze.remove_wall(current, neighbor)
                 stack.append(neighbor)
 
-    def unvisited_neighbors(self, cell):
+    def unvisited_neighbors(self, cell: Cell) -> list[Cell]:
         return [
             neighbor
             for neighbor in self.maze.neighbors(cell)
@@ -71,9 +72,10 @@ class MazeGenerator:
             neighbors = self.maze.neighbors(corner)
 
             for neighbor in neighbors:
-                self.maze.remove_wall(corner, neighbor)
+                if self.can_remove_wall(corner, neighbor):
+                    self.maze.remove_wall(corner, neighbor)
 
-    def add_loops(self, count=0) -> None:
+    def add_loops(self, count: int = 0) -> None:
         candidates = []
 
         for y in range(self.maze.height):
@@ -100,13 +102,14 @@ class MazeGenerator:
             if self.creates_large_open_area(cell, neighbor):
                 continue
 
-            self.maze.remove_wall(cell, neighbor)
-            added += 1
+            if self.can_remove_wall(cell, neighbor):
+                self.maze.remove_wall(cell, neighbor)
+                added += 1
 
             if added >= count:
                 return
 
-    def dead_ends(self):
+    def dead_ends(self) -> list[Cell]:
         result = []
 
         for row in self.maze.grid:
@@ -117,11 +120,6 @@ class MazeGenerator:
         return result
 
     def reduce_dead_ends(self) -> None:
-        protected_cells = []
-        pattern_cells = MazeDisplay._get_42_pattern_cells(self.maze)
-        for x, y in pattern_cells:
-            c = self.maze.get_cell(x, y)
-            protected_cells.append(c)
         while True:
             dead_ends = self.dead_ends()
             if len(dead_ends) <= 0:
@@ -148,7 +146,7 @@ class MazeGenerator:
                     if large_area:
                         continue
 
-                    if neighbor not in protected_cells:
+                    if self.can_remove_wall(cell, neighbor):
                         self.maze.remove_wall(cell, neighbor)
                         opened = True
                         break
@@ -160,12 +158,6 @@ class MazeGenerator:
                 return
 
     def open_center(self) -> None:
-        protected_cells = []
-        pattern_cells = MazeDisplay._get_42_pattern_cells(self.maze)
-        for x, y in pattern_cells:
-            c = self.maze.get_cell(x, y)
-            protected_cells.append(c)
-
         center_x = self.maze.width // 2
         center_y = self.maze.height // 2
 
@@ -179,7 +171,7 @@ class MazeGenerator:
 
         if neighbors:
             neighbor = self.random.choice(neighbors)
-            if neighbor not in protected_cells:
+            if self.can_remove_wall(center, neighbor):
                 self.maze.remove_wall(center, neighbor)
 
     def degree(self, cell: Cell) -> int:
@@ -222,7 +214,8 @@ class MazeGenerator:
         first: Cell,
         second: Cell
     ) -> bool:
-        self.maze.remove_wall(first, second)
+        if self.can_remove_wall(first, second):
+            self.maze.remove_wall(first, second)
 
         result = False
 
@@ -285,3 +278,19 @@ class MazeGenerator:
         if cell.y + 1 < self.maze.height:
             south = self.maze.get_cell(cell.x, cell.y + 1)
             south.north = True
+
+    def protected_cells(self, cell: Cell) -> bool:
+        protected_cells = []
+        pattern_cells = MazeDisplay._get_42_pattern_cells(self.maze)
+        for x, y in pattern_cells:
+            c = self.maze.get_cell(x, y)
+            protected_cells.append(c)
+        if cell in protected_cells:
+            return True
+        return False
+
+    def can_remove_wall(self, first: Cell, second: Cell) -> bool:
+        return (
+            not self.protected_cells(first)
+            and not self.protected_cells(second)
+        )
