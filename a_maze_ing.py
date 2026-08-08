@@ -60,11 +60,15 @@ def main():
         file.write(f"{exit_x},{exit_y}\n")
         file.write(solution + "\n")
 
-    MazeDisplay.preview(
-        maze,
-        entry,
-        exit
-    )
+    try:
+        MazeDisplay.preview(
+            maze,
+            entry,
+            exit
+        )
+    except ValueError as e:
+        print(e)
+        return
 
     show_path = False
     choice = ""
@@ -90,7 +94,11 @@ q - Quit""")
             MazeDisplay.preview(maze, entry, exit, show_path)
 
         if choice == 'c':
-            print("Colors are not ready. Add them tos display.py")
+            col = int(input("Choose color (1-5)"))
+            if col not in [1, 2, 3, 4, 5]:
+                print("error")
+                return
+            MazeDisplay.preview(maze, entry, exit, show_path, col)
 
 
 if __name__ == "__main__":

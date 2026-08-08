@@ -3,40 +3,58 @@ from maze.solution import bfs
 
 
 class MazeDisplay:
+    COLORS = {1: "\033[37m",  # White
+              2: "\033[32m",  # Green
+              3: "\033[33m",  # Yellow
+              4: "\033[34m",  # Blue
+              5: "\033[35m"  # Magenta
+              }
+
+    RESET = "\033[0m"
+
     @staticmethod
-    def ascii(maze, entry: Cell, exit: Cell, show_path) -> str:
+    def ascii(maze, entry: Cell, exit: Cell, show_path, color=1) -> str:
         path_cells = []
         if show_path and entry and exit:
             path_cells = bfs(maze, entry, exit)
             path_cells = [(cell.x, cell.y) for cell in path_cells]
         entry = (entry.x, entry.y)
         exit = (exit.x, exit.y)
+
+        color_code = MazeDisplay.COLORS.get(color, MazeDisplay.COLORS[1])
+
         pattern_cells = MazeDisplay._get_42_pattern_cells(maze)
         result = []
-        result.append("+" + "---+" * maze.width)
+        result.append(
+            color_code + "+" + "---+" * maze.width + MazeDisplay.RESET
+            )
         for y in range(maze.height):
-            row = "|"
+            row = color_code + "|"
             for x in range(maze.width):
                 cell = maze.get_cell(x, y)
                 if (x, y) in pattern_cells:
+                    if entry in pattern_cells:
+                        raise ValueError("Error entry in 42 pattern")
+                    if exit in pattern_cells:
+                        raise ValueError("Error exit in 42 pattern")
                     row += " █ "
                 elif entry and (x, y) == entry:
                     row += " S "
                 elif exit and (x, y) == exit:
                     row += " E "
                 elif (x, y) in path_cells:
-                    row += " * "
+                    row += color_code + " * "
                 else:
                     row += "   "
-                row += "|" if cell.east else " "
+                row += color_code + "|" if cell.east else " "
             result.append(row)
-            bottom = "+"
+            bottom = color_code + "+"
             for x in range(maze.width):
                 cell = maze.get_cell(x, y)
                 if cell.south:
-                    bottom += "---+"
+                    bottom += color_code + "---+"
                 else:
-                    bottom += "   +"
+                    bottom += color_code + "   +"
             result.append(bottom)
         return "\n".join(result)
     
@@ -73,7 +91,7 @@ class MazeDisplay:
             [1, 1, 1, 1, 1],
         ]
         
-        start_x_4 = center_x - 7
+        start_x_4 = center_x - 5
         start_y_4 = center_y - 3
         
         start_x_2 = center_x + 1
@@ -98,13 +116,14 @@ class MazeDisplay:
 
     @staticmethod
     def print_ascii(maze, entry: Cell,
-                    exit: Cell, show_path=False) -> None:
-        print(MazeDisplay.ascii(maze, entry, exit, show_path))
+                    exit: Cell, show_path=False, color=1) -> None:
+        print(MazeDisplay.ascii(maze, entry, exit, show_path, color))
 
     @staticmethod
-    def preview(maze, entry: Cell, exit: Cell, show_path=False) -> None:
+    def preview(maze, entry: Cell, exit: Cell,
+                show_path=False, color=1) -> None:
         print("\n" + "="*50)
         print("MAZE PREVIEW")
         print("="*50)
-        MazeDisplay.print_ascii(maze, entry, exit, show_path)
+        MazeDisplay.print_ascii(maze, entry, exit, show_path, color)
         print("="*50 + "\n")

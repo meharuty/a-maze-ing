@@ -234,7 +234,6 @@ class MazeGenerator:
                     return False
 
         return True
-    
 
     def carve_42_pattern(self) -> None:
         pattern_cells = MazeDisplay._get_42_pattern_cells(self.maze)
