@@ -10,10 +10,9 @@ debug:
 	poetry run python3 -m pdb a_maze_ing.py config_right.txt
 
 clean:
-	find . -type d -name "__pycache__" -exec rm -rf {} +
-	find . -type d -name ".mypy_cache" -exec rm -rf {} +
-	find . -type d -name ".pytest_cache" -exec rm -rf {} +
-	find . -type f -name "*.pyc" -delete
+	rm -rf maze/__pycache__
+	rm -rf .mypy_cache
+	rm -rf .pytest_cache
 
 lint:
 	flake8 .
