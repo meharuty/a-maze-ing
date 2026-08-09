@@ -109,9 +109,3 @@ class Maze:
 
         else:
             raise ValueError("Cells are not adjacent.")
-
-    def __repr__(self) -> str:
-        return (
-            f"Maze(width={self.width}, "
-            f"height={self.height})"
-        )

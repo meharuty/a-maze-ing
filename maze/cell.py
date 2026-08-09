@@ -26,12 +26,3 @@ class Cell:
             mask |= 8
 
         return mask
-
-    def __repr__(self) -> str:
-        return (
-            f"Cell({self.x}, {self.y}, "
-            f"N={self.north}, "
-            f"E={self.east}, "
-            f"S={self.south}, "
-            f"W={self.west})"
-        )

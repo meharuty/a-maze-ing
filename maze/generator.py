@@ -75,7 +75,7 @@ class MazeGenerator:
                 if self.can_remove_wall(corner, neighbor):
                     self.maze.remove_wall(corner, neighbor)
 
-    def add_loops(self, count: int = 0) -> None:
+    def add_loops(self, count: int = 2) -> None:
         candidates = []
 
         for y in range(self.maze.height):
@@ -122,7 +122,7 @@ class MazeGenerator:
     def reduce_dead_ends(self) -> None:
         while True:
             dead_ends = self.dead_ends()
-            if len(dead_ends) <= 0:
+            if len(dead_ends) == 0:
                 return
 
             self.random.shuffle(dead_ends)
@@ -214,8 +214,7 @@ class MazeGenerator:
         first: Cell,
         second: Cell
     ) -> bool:
-        if self.can_remove_wall(first, second):
-            self.maze.remove_wall(first, second)
+        self.maze.remove_wall(first, second)
 
         result = False
 
