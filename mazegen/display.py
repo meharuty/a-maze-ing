@@ -20,6 +20,7 @@ class MazeDisplay:
         if show_path and ent and ex:
             path = bfs(maze, ent, ex)
             path_cells = [(cell.x, cell.y) for cell in path]
+        print(path_cells)
         entry = (ent.x, ent.y)
         exit = (ex.x, ex.y)
 

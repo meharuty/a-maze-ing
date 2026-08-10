@@ -50,16 +50,16 @@ class Maze:
             dx = neighbor.x - cell.x
             dy = neighbor.y - cell.y
 
-            if dx == 1 and not cell.east:
+            if dx == 1 and not cell.east and not neighbor.west:
                 valid.append(neighbor)
 
-            elif dx == -1 and not cell.west:
+            elif dx == -1 and not cell.west and not neighbor.east:
                 valid.append(neighbor)
 
-            elif dy == 1 and not cell.south:
+            elif dy == 1 and not cell.south and not neighbor.north:
                 valid.append(neighbor)
 
-            elif dy == -1 and not cell.north:
+            elif dy == -1 and not cell.north and not neighbor.south:
                 valid.append(neighbor)
 
         return valid

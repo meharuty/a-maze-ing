@@ -13,10 +13,12 @@ def bfs(maze: Maze, root: Cell, target: Cell) -> list[Cell]:
     while queue:
         vertex = queue.popleft()
 
-        if vertex == target:
+        if vertex.x == target.x and vertex.y == target.y:
             break
 
         for neighbour in maze.get_neighbors_open(vertex):
+            print(maze.neighbors(vertex))
+            print(maze.get_neighbors_open(vertex))
             position = (neighbour.x, neighbour.y)
 
             if position not in visited:
@@ -32,7 +34,7 @@ def bfs(maze: Maze, root: Cell, target: Cell) -> list[Cell]:
     path = []
     current = target
 
-    while current != root:
+    while (current.x, current.y) != (root.x, root.y):
         path.append(current)
         current = parents[(current.x, current.y)]
 
