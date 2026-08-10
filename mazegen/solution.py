@@ -17,6 +17,7 @@ def bfs(maze: Maze, root: Cell, target: Cell) -> list[Cell]:
             break
 
         for neighbour in maze.get_neighbors_open(vertex):
+            print(vertex)
             print(maze.neighbors(vertex))
             print(maze.get_neighbors_open(vertex))
             position = (neighbour.x, neighbour.y)

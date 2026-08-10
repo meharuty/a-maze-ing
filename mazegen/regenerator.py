@@ -7,13 +7,17 @@ from typing import Any
 def regenerate_maze(config: dict[str, Any]) -> Maze:
     maze = Maze(
         config["WIDTH"],
-        config["HEIGHT"]
+        config["HEIGHT"],
     )
-    new_seed = None
-    if config["SEED"]:
-        new_seed = config["SEED"] * random.randint(2, 10)
+
+    new_seed = random.SystemRandom().randint(0, 2**32 - 1)
+
+    print("NEW SEED:", new_seed)
 
     generator = MazeGenerator(maze, new_seed)
-    generator.generate(config["PERFECT"])
+    generator.generate(
+        config["PERFECT"],
+        config["ENTRY"],
+    )
 
     return maze

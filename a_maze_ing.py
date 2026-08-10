@@ -29,7 +29,7 @@ def main() -> None:
 
     maze = Maze(config["WIDTH"], config["HEIGHT"])
     generator = MazeGenerator(maze, config["SEED"])
-    generator.generate(config["PERFECT"])
+    generator.generate(config["PERFECT"], config["ENTRY"])
 
     if not generator.validate_dfs():
         print("Generation failed.")
@@ -88,7 +88,23 @@ def main() -> None:
 
         if choice == '1':
             maze = regenerate_maze(config)
-            MazeDisplay.preview(maze=maze, entry=entry, exit=exit, color=col)
+
+            entry = maze.grid[entry_x][entry_y]
+            exit = maze.grid[exit_x][exit_y]
+            path = bfs(
+                maze=maze,
+                root=entry,
+                target=exit
+            )
+
+            MazeDisplay.preview(
+                maze=maze,
+                entry=entry,
+                exit=exit,
+                show_path=show_path,
+                color=col
+            )
+        # MazeDisplay.preview(maze=maze, entry=entry, exit=exit, color=col)
 
         if choice == '2':
             show_path = not show_path

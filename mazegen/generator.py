@@ -10,8 +10,9 @@ class MazeGenerator:
         self.maze = maze
         self.random = random.Random(seed)
 
-    def generate(self, perfect: bool) -> None:
-        start = self.maze.grid[0][0]
+    def generate(self, perfect: bool, entry: tuple[int, int]) -> None:
+        x, y = entry
+        start = self.maze.grid[x][y]
         self._visit(start)
 
         self.carve_42_pattern()
