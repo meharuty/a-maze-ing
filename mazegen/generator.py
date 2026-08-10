@@ -1,8 +1,8 @@
 import random
 from typing import Any
-from maze.maze import Maze
-from maze.cell import Cell
-from maze.display import MazeDisplay
+from mazegen.maze import Maze
+from mazegen.cell import Cell
+from mazegen.display import MazeDisplay
 
 
 class MazeGenerator:

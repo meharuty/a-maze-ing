@@ -1,6 +1,6 @@
-from maze.generator import MazeGenerator
+from mazegen.generator import MazeGenerator
 import random
-from maze.maze import Maze
+from mazegen.maze import Maze
 from typing import Any
 
 

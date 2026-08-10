@@ -1,5 +1,5 @@
-from maze.maze import Maze
-from maze.cell import Cell
+from mazegen.maze import Maze
+from mazegen.cell import Cell
 
 
 class HexRepr:

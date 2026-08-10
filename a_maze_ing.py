@@ -1,12 +1,12 @@
 import sys
 
-from maze.parser import ConfigParser
-from maze.maze import Maze
-from maze.generator import MazeGenerator
-from maze.maze_hexadecimal import HexRepr
-from maze.solution import bfs, path_to_directions
-from maze.display import MazeDisplay
-from maze.regenerator import regenerate_maze
+from mazegen.parser import ConfigParser
+from mazegen.maze import Maze
+from mazegen.generator import MazeGenerator
+from mazegen.maze_hexadecimal import HexRepr
+from mazegen.solution import bfs, path_to_directions
+from mazegen.display import MazeDisplay
+from mazegen.regenerator import regenerate_maze
 
 
 def main() -> None:

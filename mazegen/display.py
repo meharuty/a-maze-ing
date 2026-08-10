@@ -1,6 +1,6 @@
-from maze.cell import Cell
-from maze.solution import bfs
-from maze.maze import Maze
+from mazegen.cell import Cell
+from mazegen.solution import bfs
+from mazegen.maze import Maze
 
 
 class MazeDisplay:

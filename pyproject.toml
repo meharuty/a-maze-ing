@@ -1,14 +1,14 @@
 [project]
-name = "pyproject"
-version = "0.1.0"
-description = ""
+name = "mazegen"
+version = "1.0.0"
+description = "A maze generator written in Python"
 authors = [
-    {name = "Meline",email = "melineharutyunyan168@gmail.com"}
+    {name = "Meline"}
 ]
+readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
 ]
-
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
