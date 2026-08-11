@@ -2,7 +2,19 @@ from mazegen.cell import Cell
 
 
 class Maze:
+    """Represent a rectangular maze as a grid of cells."""
+
     def __init__(self, width: int, height: int):
+        """Initialize a maze with the given dimensions.
+
+        Args:
+            width: The number of cells along the horizontal axis.
+            height: The number of cells along the vertical axis.
+
+        Raises:
+            ValueError: If width or height is not positive.
+        """
+
         if width <= 0 or height <= 0:
             raise ValueError("Maze dimensions must be positive.")
 
@@ -15,9 +27,26 @@ class Maze:
         ]
 
     def get_cell(self, x: int, y: int) -> Cell:
+        """Return the cell at the specified coordinates.
+
+        Args:
+            x: The horizontal coordinate of the cell.
+            y: The vertical coordinate of the cell.
+
+        Returns: The cell at the given coordinates.
+        """
         return self.grid[x][y]
 
     def in_bounds(self, x: int, y: int) -> bool:
+        """Check whether the given coordinates are inside the maze.
+
+        Args:
+            x: The horizontal coordinate to check.
+            y: The vertical coordinate to check.
+
+        Returns:
+            True if the coordinates are inside the maze, otherwise False.
+        """
         return (
             0 <= x < self.width
             and
@@ -25,6 +54,15 @@ class Maze:
         )
 
     def neighbors(self, cell: Cell) -> list[Cell]:
+        """Return all cells directly adjacent to a given cell.
+
+        Args:
+            cell: The cell whose neighbors should be found.
+
+        Returns:
+            A list of adjacent cells that are within the maze boundaries.
+        """
+
         neighbors = []
 
         directions = [
@@ -44,6 +82,16 @@ class Maze:
         return neighbors
 
     def get_neighbors_open(self, cell: Cell) -> list[Cell]:
+        """Return neighboring cells connected by an open passage.
+
+        Args:
+            cell: The cell whose open neighbors should be found.
+
+        Returns:
+            A list of neighboring cells that
+            can be reached without crossing a wall.
+        """
+
         valid = []
 
         for neighbor in self.neighbors(cell):
@@ -65,6 +113,16 @@ class Maze:
         return valid
 
     def remove_wall(self, first: Cell, second: Cell) -> None:
+        """Remove the wall between two adjacent cells.
+
+        Args:
+            first: The first cell.
+            second: The second cell.
+
+        Raises:
+            ValueError: If the cells are not directly adjacent.
+        """
+
         dx = second.x - first.x
         dy = second.y - first.y
 
@@ -88,6 +146,16 @@ class Maze:
             raise ValueError("Cells are not adjacent.")
 
     def add_wall(self, first: Cell, second: Cell) -> None:
+        """Add a wall between two adjacent cells.
+
+        Args:
+            first: The first cell.
+            second: The second cell.
+
+        Raises:
+            ValueError: If the cells are not directly adjacent.
+        """
+
         dx = second.x - first.x
         dy = second.y - first.y
 

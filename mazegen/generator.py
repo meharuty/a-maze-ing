@@ -6,11 +6,26 @@ from mazegen.display import MazeDisplay
 
 
 class MazeGenerator:
+    """Generate and modify mazes using randomized maze algorithms."""
     def __init__(self, maze: Maze, seed: Any) -> None:
+        """Initialize the maze generator.
+
+        Args:
+            maze: The maze to generate and modify.
+            seed: Seed used to initialize the random number generator.
+        """
+
         self.maze = maze
         self.random = random.Random(seed)
 
     def generate(self, perfect: bool, entry: tuple[int, int]) -> None:
+        """Generate a maze starting from the given entry cell.
+
+        Args:
+            perfect: Whether to generate a perfect maze without loops.
+            entry: Coordinates of the cell where generation starts.
+        """
+
         x, y = entry
         start = self.maze.grid[x][y]
         self._visit(start)
@@ -20,6 +35,12 @@ class MazeGenerator:
             self.for_non_perfect()
 
     def _visit(self, cell: Cell) -> None:
+        """Generate maze passages using an iterative DFS algorithm.
+
+        Args:
+            cell: The cell from which maze generation starts.
+        """
+
         pattern_cells = MazeDisplay._get_42_pattern_cells(self.maze)
         for x, y in pattern_cells:
             pattern_cell = self.maze.get_cell(x, y)
@@ -39,6 +60,15 @@ class MazeGenerator:
                 stack.append(neighbor)
 
     def unvisited_neighbors(self, cell: Cell) -> list[Cell]:
+        """Return neighboring cells that have not been visited.
+
+        Args:
+            cell: The cell whose neighbors are checked.
+
+        Returns:
+            A list of unvisited neighboring cells.
+        """
+
         return [
             neighbor
             for neighbor in self.maze.neighbors(cell)
@@ -46,6 +76,12 @@ class MazeGenerator:
         ]
 
     def validate_dfs(self) -> bool:
+        """Check whether every cell in the maze was visited.
+
+        Returns:
+            True if all cells were visited, otherwise False.
+        """
+
         for row in self.maze.grid:
             for cell in row:
                 if not (cell.visited):
@@ -53,12 +89,16 @@ class MazeGenerator:
         return True
 
     def for_non_perfect(self) -> None:
+        """Modify a perfect maze to create a non-perfect maze."""
+
         self.open_corners()
         self.open_center()
         self.add_loops()
         self.reduce_dead_ends()
 
     def open_corners(self) -> None:
+        """Open passages around the four corners of the maze."""
+
         corners = [
             self.maze.get_cell(0, 0),
             self.maze.get_cell(self.maze.width - 1, 0),
@@ -77,6 +117,12 @@ class MazeGenerator:
                     self.maze.remove_wall(corner, neighbor)
 
     def add_loops(self, count: int = 2) -> None:
+        """Add passages to create additional routes in the maze.
+
+        Args:
+            count: Maximum number of additional passages to create.
+        """
+
         candidates = []
 
         for y in range(self.maze.height):
@@ -111,6 +157,12 @@ class MazeGenerator:
                 return
 
     def dead_ends(self) -> list[Cell]:
+        """Find all cells that are dead ends.
+
+        Returns:
+            A list of cells having exactly one open passage.
+        """
+
         result = []
 
         for row in self.maze.grid:
@@ -121,6 +173,8 @@ class MazeGenerator:
         return result
 
     def reduce_dead_ends(self) -> None:
+        """Reduce the number of dead ends by opening additional passages."""
+
         while True:
             dead_ends = self.dead_ends()
             if len(dead_ends) == 0:
@@ -159,6 +213,8 @@ class MazeGenerator:
                 return
 
     def open_center(self) -> None:
+        """Open a passage from the center cell to a neighboring cell."""
+
         center_x = self.maze.width // 2
         center_y = self.maze.height // 2
 
@@ -176,6 +232,15 @@ class MazeGenerator:
                 self.maze.remove_wall(center, neighbor)
 
     def degree(self, cell: Cell) -> int:
+        """Return the number of open passages connected to a cell.
+
+        Args:
+            cell: The cell whose open passages are counted.
+
+        Returns:
+            The number of open sides of the cell.
+        """
+
         degree = 0
 
         if not cell.north:
@@ -193,6 +258,16 @@ class MazeGenerator:
         return degree
 
     def is_open(self, first: Cell, second: Cell) -> bool:
+        """Check whether two neighboring cells have an open passage.
+
+        Args:
+            first: The first cell.
+            second: The neighboring cell to check.
+
+        Returns:
+            True if the passage between the cells is open, otherwise False.
+        """
+
         dx = second.x - first.x
         dy = second.y - first.y
 
@@ -215,6 +290,16 @@ class MazeGenerator:
         first: Cell,
         second: Cell
     ) -> bool:
+        """Check whether opening a wall creates a 3x3 open area.
+
+        Args:
+            first: The first cell of the potential passage.
+            second: The neighboring cell of the potential passage.
+
+        Returns:
+            True if opening the wall creates a 3x3 open area, otherwise False.
+        """
+
         self.maze.remove_wall(first, second)
 
         result = False
@@ -234,6 +319,16 @@ class MazeGenerator:
         return result
 
     def is_open_area_3x3(self, start_x: int, start_y: int) -> bool:
+        """Check whether a 3x3 area is completely open.
+
+        Args:
+            start_x: The x-coordinate of the area's top-left cell.
+            start_y: The y-coordinate of the area's top-left cell.
+
+        Returns:
+            True if the 3x3 area is fully open, otherwise False.
+        """
+
         for y in range(start_y, start_y + 3):
             for x in range(start_x, start_x + 2):
                 first = self.maze.get_cell(x, y)
@@ -253,6 +348,8 @@ class MazeGenerator:
         return True
 
     def carve_42_pattern(self) -> None:
+        """Close the cells required to create the '42' pattern."""
+
         pattern_cells = MazeDisplay._get_42_pattern_cells(self.maze)
         if not pattern_cells:
             print("Warning: Maze too small for '42' pattern - skipping")
@@ -262,6 +359,12 @@ class MazeGenerator:
             self._make_cell_closed(cell)
 
     def _make_cell_closed(self, cell: Cell) -> None:
+        """Close all four walls of a cell and its neighboring walls.
+
+        Args:
+            cell: The cell to close completely.
+        """
+
         cell.north = True
         cell.east = True
         cell.south = True
@@ -280,6 +383,16 @@ class MazeGenerator:
             south.north = True
 
     def protected_cells(self, cell: Cell) -> bool:
+        """Check whether a cell belongs to the '42' pattern.
+
+        Args:
+            cell: The cell to check.
+
+        Returns:
+            True if the cell belongs to the protected '42' pattern,
+            otherwise False.
+        """
+
         protected_cells = []
         pattern_cells = MazeDisplay._get_42_pattern_cells(self.maze)
         for x, y in pattern_cells:
@@ -290,6 +403,13 @@ class MazeGenerator:
         return False
 
     def can_remove_wall(self, first: Cell, second: Cell) -> bool:
+        """Check whether a wall can safely be removed.
+
+        Args:
+            first: The first cell.
+            second: The neighboring cell.
+        """
+
         return (
             not self.protected_cells(first)
             and not self.protected_cells(second)

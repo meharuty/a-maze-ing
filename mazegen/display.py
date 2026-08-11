@@ -4,6 +4,8 @@ from mazegen.maze import Maze
 
 
 class MazeDisplay:
+    """Provide methods for displaying a maze in the terminal."""
+
     COLORS = {1: "\033[37m",  # White
               2: "\033[32m",  # Green
               3: "\033[33m",  # Yellow
@@ -16,11 +18,23 @@ class MazeDisplay:
     @staticmethod
     def ascii(maze: Maze, ent: Cell, ex: Cell,
               show_path: bool, color: int = 1) -> str:
+        """
+        Build and return the ASCII representation of a maze.
+
+        Args:
+            maze: The maze to display.
+            ent: The entrance cell.
+            ex: The exit cell.
+            show_path: Whether to display the shortest path.
+            color: The color number used for the maze walls and path.
+        Returns:
+            A string containing the ASCII representation of the maze.
+        """
+
         path_cells = []
         if show_path and ent and ex:
             path = bfs(maze, ent, ex)
             path_cells = [(cell.x, cell.y) for cell in path]
-        print(path_cells)
         entry = (ent.x, ent.y)
         exit = (ex.x, ex.y)
 
@@ -40,7 +54,7 @@ class MazeDisplay:
                         raise ValueError("Error entry in 42 pattern")
                     if exit in pattern_cells:
                         raise ValueError("Error exit in 42 pattern")
-                    row += " █ "
+                    row += " \u2588 "
                 elif entry and (x, y) == entry:
                     row += " S "
                 elif exit and (x, y) == exit:
@@ -63,6 +77,15 @@ class MazeDisplay:
 
     @staticmethod
     def _get_42_pattern_cells(maze: Maze) -> set[tuple[int, int]]:
+        """Return the coordinates of cells forming the '42' pattern.
+        Args:
+            maze: The maze used to determine the pattern position.
+
+            Returns:
+                A set of (x, y) coordinates belonging to the '42' pattern.
+                An empty set is returned if the maze is too small.
+        """
+
         width = maze.width
         height = maze.height
 
@@ -121,9 +144,27 @@ class MazeDisplay:
     def print_ascii(maze: Maze, entry: Cell,
                     exit: Cell, show_path: bool = False, color: int = 1
                     ) -> None:
+        """Print the ASCII representation of a maze to the terminal.
+
+        Args:
+            maze: The maze to display.
+            entry: The entrance cell.
+            exit: The exit cell.
+            show_path: Whether to display the shortest path.
+            color: The color number used for the maze display.
+        """
         print(MazeDisplay.ascii(maze, entry, exit, show_path, color))
 
     @staticmethod
     def preview(maze: Maze, entry: Cell, exit: Cell,
                 show_path: bool = False, color: int = 1) -> None:
+        """Display a preview of the maze in the terminal.
+
+        Args:
+            maze: The maze to display.
+            entry: The entrance cell.
+            exit: The exit cell.
+            show_path: Whether to display the shortest path.
+            color: The color number used for the maze display.
+        """
         MazeDisplay.print_ascii(maze, entry, exit, show_path, color)

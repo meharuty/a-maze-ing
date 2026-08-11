@@ -5,19 +5,25 @@ from typing import Any
 
 
 def regenerate_maze(config: dict[str, Any]) -> Maze:
+    """Generate a new maze using the provided configuration.
+    A new seed is derived from the configured seed when one is provided.
+
+    Args:
+        config: Validated maze configuration containing the maze dimensions,
+        entry point, generation mode, and optional seed.
+
+    Returns:
+        A newly generated maze.
+    """
     maze = Maze(
         config["WIDTH"],
-        config["HEIGHT"],
+        config["HEIGHT"]
     )
-
-    new_seed = random.SystemRandom().randint(0, 2**32 - 1)
-
-    print("NEW SEED:", new_seed)
+    new_seed = None
+    if config["SEED"]:
+        new_seed = config["SEED"] * random.randint(2, 10)
 
     generator = MazeGenerator(maze, new_seed)
-    generator.generate(
-        config["PERFECT"],
-        config["ENTRY"],
-    )
+    generator.generate(config["PERFECT"], config["ENTRY"])
 
     return maze

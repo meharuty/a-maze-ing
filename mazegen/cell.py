@@ -3,6 +3,8 @@ from dataclasses import dataclass
 
 @dataclass
 class Cell:
+    """Represent a single cell in the maze."""
+
     x: int
     y: int
 
@@ -14,6 +16,16 @@ class Cell:
     visited: bool = False
 
     def get_bitmask(self) -> int:
+        """
+        Return the bitmask representing the cell's walls.
+
+        Each wall is represented by one bit:
+        north=1, east=2, south=4, west=8.
+
+        Returns:
+            int: The bitmask of the cell's walls.
+        """
+
         mask = 0
 
         if self.north:

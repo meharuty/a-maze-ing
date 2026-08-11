@@ -3,10 +3,28 @@ from typing import Any
 
 
 class ConfigParser:
+    """Parse and validate maze configuration files."""
+
     def __init__(self, filename: str) -> None:
+        """Initialize the configuration parser.
+
+        Args:
+            filename: Path to the configuration file.
+        """
         self.filename = filename
 
     def check(self) -> list[str]:
+        """Read and clean the configuration file.
+        Empty lines and comments are removed from the file.
+
+        Returns:
+            A list of non-empty, non-comment configuration lines.
+
+        Raises:
+            FileNotFoundError: If the configuration file does not exist.
+            ValueError: If the configuration file is empty.
+        """
+
         file_path = Path(self.filename)
 
         if not (file_path.is_file()):
@@ -26,6 +44,17 @@ class ConfigParser:
         return lines
 
     def parse_dict(self) -> dict[str, str]:
+        """Parse configuration lines into a dictionary.
+
+        Returns:
+            A dictionary containing configuration keys and values.
+
+        Raises:
+            FileNotFoundError: If the configuration file does not exist.
+            ValueError: If the file is empty or contains duplicate keys.
+            FileExistsError: If OUTPUT_FILE is empty.
+        """
+
         lines = self.check()
         dc = {}
 
@@ -42,6 +71,18 @@ class ConfigParser:
         return dc
 
     def validate_dict(self, dc: dict[str, str]) -> bool:
+        """Check that configuration keys are valid and complete.
+
+        Args:
+            dc: Configuration dictionary to validate.
+
+        Returns:
+            True if all mandatory keys are present.
+
+        Raises:
+            ValueError: If an unknown configuration key is found.
+        """
+
         arr = [
             'WIDTH', 'HEIGHT',
             'ENTRY', 'EXIT',
@@ -59,6 +100,16 @@ class ConfigParser:
         return result
 
     def dict_optimization(self) -> dict[str, Any]:
+        """Convert configuration values to their appropriate types.
+
+        Integer values are converted to integers, coordinates to tuples,
+        and the PERFECT value to a boolean. A missing SEED is set to None.
+
+        Returns:
+            A dictionary containing typed configuration values.
+
+        Raises:
+            ValueError: If a configuration value has an invalid format."""
         dc = self.parse_dict()
         if not (self.validate_dict(dc)):
             raise ValueError  # need to be validation error from pydantic
@@ -88,6 +139,16 @@ class ConfigParser:
         return dc
 
     def validate_config(self) -> dict[str, Any]:
+        """Validate maze dimensions and entry and exit coordinates.
+
+        Returns:
+            A validated configuration dictionary.
+
+        Raises:
+            ValueError: If dimensions are invalid,
+            coordinates are outside the maze, or entry and exit are identical.
+        """
+
         config = self.dict_optimization()
         width = config["WIDTH"]
         height = config["HEIGHT"]
@@ -114,4 +175,13 @@ class ConfigParser:
         return config
 
     def parse(self) -> dict[str, Any]:
+        """Parse and fully validate the configuration file.
+
+        Returns:
+            A dictionary containing the validated maze configuration.
+
+        Raises:
+            FileNotFoundError: If the configuration file does not exist.
+            ValueError: If any configuration value or setting is invalid.
+        """
         return self.validate_config()
