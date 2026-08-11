@@ -72,18 +72,20 @@ def main() -> None:
     show_path = False
     choice = ""
     col = 1
+    col2 = 1
 
-    while (choice != '4'):
+    while (choice != '5'):
         print("""=== A-Maze-ing ===
 1. Re-generate a new maze
 2. Show / Hide the shortest path
 3. Rotate the wall colours
-4. Quit""")
+4. Rotate the 42 pattern colours
+5. Quit""")
 
         choice = input('\n')
         if choice not in ['1', '2', '3', '4']:
             print("YOUR CHOICE IS WRONG!")
-            return
+            continue
 
         if choice == '1':
             maze = generator.regenerate_maze(config)
@@ -110,12 +112,13 @@ def main() -> None:
                 entry=entry,
                 exit=exit,
                 show_path=show_path,
-                color=col
+                color=col,
+                col2=col2
             )
 
         if choice == '2':
             show_path = not show_path
-            MazeDisplay.preview(maze, entry, exit, show_path, col)
+            MazeDisplay.preview(maze, entry, exit, show_path, col, col2)
 
         if choice == '3':
             co = input("Choose color (1-5)")
@@ -123,7 +126,15 @@ def main() -> None:
                 print("error")
                 return
             col = int(co)
-            MazeDisplay.preview(maze, entry, exit, show_path, col)
+            MazeDisplay.preview(maze, entry, exit, show_path, col, col2)
+
+        if choice == '4':
+            co2 = input("Choose color (1-5)")
+            if co2 not in ['1', '2', '3', '4', '5']:
+                print("error")
+                return
+            col2 = int(co2)
+            MazeDisplay.preview(maze, entry, exit, show_path, col, col2)
 
 
 if __name__ == "__main__":
