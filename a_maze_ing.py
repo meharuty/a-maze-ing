@@ -6,7 +6,6 @@ from mazegen.generator import MazeGenerator
 from mazegen.maze_hexadecimal import HexRepr
 from mazegen.solution import bfs, path_to_directions
 from mazegen.display import MazeDisplay
-from mazegen.regenerator import regenerate_maze
 
 
 def main() -> None:
@@ -87,7 +86,7 @@ def main() -> None:
             return
 
         if choice == '1':
-            maze = regenerate_maze(config)
+            maze = generator.regenerate_maze(config)
 
             entry = maze.grid[entry_x][entry_y]
             exit = maze.grid[exit_x][exit_y]
@@ -96,6 +95,15 @@ def main() -> None:
                 root=entry,
                 target=exit
             )
+            solution = path_to_directions(path)
+            hex_repr = HexRepr(maze)
+            hex_repr.write(config["OUTPUT_FILE"])
+
+            with open(config["OUTPUT_FILE"], "a") as file:
+                file.write("\n\n")
+                file.write(f"{entry_x},{entry_y}\n")
+                file.write(f"{exit_x},{exit_y}\n")
+                file.write(solution + "\n")
 
             MazeDisplay.preview(
                 maze=maze,
@@ -104,7 +112,6 @@ def main() -> None:
                 show_path=show_path,
                 color=col
             )
-        # MazeDisplay.preview(maze=maze, entry=entry, exit=exit, color=col)
 
         if choice == '2':
             show_path = not show_path

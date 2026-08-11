@@ -59,6 +59,30 @@ class MazeGenerator:
                 self.maze.remove_wall(current, neighbor)
                 stack.append(neighbor)
 
+    def regenerate_maze(self, config: dict[str, Any]) -> Maze:
+        """Generate a new maze using the provided configuration.
+        A new seed is derived from the configured seed when one is provided.
+
+        Args:
+            config: Validated maze configuration containing
+            the maze dimensions,
+            entry point, generation mode, and optional seed.
+
+        Returns:
+            A newly generated maze.
+        """
+        width = self.maze.width
+        height = self.maze.height
+        self.maze = Maze(width, height)
+        new_seed = None
+        if config["SEED"]:
+            new_seed = config["SEED"] * random.randint(2, 1000)
+
+        self.random = random.Random(new_seed)
+        self.generate(config["PERFECT"], config["ENTRY"])
+
+        return self.maze
+
     def unvisited_neighbors(self, cell: Cell) -> list[Cell]:
         """Return neighboring cells that have not been visited.
 

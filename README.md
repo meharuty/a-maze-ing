@@ -107,7 +107,7 @@ We chose the **Recursive Backtracker** algorithm (also known as DFS maze generat
 - Simple to implement and easy to understand
 - Naturally produces a perfect maze (one unique path between any two points)
 - Works directly on the grid structure without extra data structures
-- Reproducible with a seed via `random.seed()`
+- Reproducible with a seed via `random.Random()`
 - Creates long winding corridors that look visually interesting
 - Easy to explain and justify during peer evaluation
 
@@ -117,39 +117,8 @@ The maze generation logic is packaged as a standalone pip-installable module cal
 
 ### What is reusable
 
-The `MazeGenerator` class inside `maze_generator.py` can be imported and used independently in any Python project.
+The `MazeGenerator` class inside `generator.py` can be imported and used independently in any Python project.
 
-### How to use it
-
-```python
-from mazegen import MazeGenerator, Grid
-
-# create a grid
-grid = Grid(width=20, height=15)
-
-# instantiate the generator
-generator = MazeGenerator(grid=grid, seed=42)
-
-# generate the maze starting from entry point
-generator.generate(entry=(0, 0))
-
-# access the grid structure
-cell = grid.get(x=5, y=3)
-print(cell.walls)  # 4-bit integer encoding N/E/S/W walls
-
-# access the solution path
-path = generator.solve(entry=(0, 0), exit=(19, 14))
-print(path)  # e.g. "SSEENWW..."
-```
-
-### Custom parameters
-
-```python
-# different size and seed
-grid = Grid(width=30, height=25)
-generator = MazeGenerator(grid=grid, seed=123)
-generator.generate(entry=(0, 0))
-```
 
 ## Team and Project Management
 
@@ -157,8 +126,8 @@ generator.generate(entry=(0, 0))
 
 | Member | Role |
 |--------|------|
-| `<login1>` | Maze structure, config parser, maze generation algorithm, pathfinding, output writer, reusable package |
-| `<login2>` | Visual representation, user interactions, Makefile, README, testing, packaging setup |
+| `<meharuty>` | Maze structure, config parser, maze generation algorithm, pathfinding, output writer, reusable package |
+| `<ggevorgy>` | Visual representation, user interactions, Makefile, README, testing, packaging setup |
 
 ### Anticipated planning and how it evolved
 
@@ -168,19 +137,17 @@ We initially planned to split the work cleanly between core logic and visualizat
 
 **Worked well:**
 - Using the 4-bit integer wall encoding — it made hex output trivial
-- The recursive backtracker was straightforward to implement and debug
+- Adding BFS for solving the maze made it easy to verify that the entry and exit were connected
 - The provided validation script caught coherence bugs early
 
 **Could be improved:**
 - The "42" pattern placement could be more flexible
-- The corridor width check adds complexity to the generator and could be cleaner
+- The maze generation and post-processing steps could be better separated to make the code easier to maintain
 - More generation algorithms could be supported as bonuses
 
 ### Tools used
 
 - Python 3.10+
-- pydantic for config validation
-- pytest for unit testing
 - mypy and flake8 for static analysis and linting
 - Claude (AI) — see Resources section
 
