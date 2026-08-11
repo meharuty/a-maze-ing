@@ -1,6 +1,8 @@
 from mazegen.cell import Cell
 from mazegen.solution import bfs
 from mazegen.maze import Maze
+import time
+import os
 
 
 class MazeDisplay:
@@ -10,14 +12,16 @@ class MazeDisplay:
               2: "\033[32m",  # Green
               3: "\033[33m",  # Yellow
               4: "\033[34m",  # Blue
-              5: "\033[35m"  # Magenta
+              5: "\033[35m",  # Magenta
+              6: "\033[31m"  # red
               }
 
     RESET = "\033[0m"
 
     @staticmethod
     def ascii(maze: Maze, ent: Cell, ex: Cell,
-              show_path: bool, color: int = 1, col2: int = 1) -> str:
+              show_path: bool, color: int = 1, col2: int = 1,
+              custom_path: list[tuple[int, int]] = None) -> str:
         """
         Build and return the ASCII representation of a maze.
 
@@ -30,8 +34,10 @@ class MazeDisplay:
         Returns:
             A string containing the ASCII representation of the maze.
         """
-
+        os.system('cls' if os.name == 'nt' else 'clear')
         path_cells = []
+        if custom_path is not None:
+            path_cells = custom_path
         if show_path and ent and ex:
             path = bfs(maze, ent, ex)
             path_cells = [(cell.x, cell.y) for cell in path]
@@ -40,7 +46,6 @@ class MazeDisplay:
 
         color_code = MazeDisplay.COLORS.get(color, MazeDisplay.COLORS[1])
         col2_code = MazeDisplay.COLORS.get(col2, MazeDisplay.COLORS[1])
-
         pattern_cells = MazeDisplay._get_42_pattern_cells(maze)
         result = []
         result.append(
@@ -57,9 +62,9 @@ class MazeDisplay:
                         raise ValueError("Error exit in 42 pattern")
                     row += col2_code + " \u2588 "
                 elif entry and (x, y) == entry:
-                    row += " S "
+                    row += " 🚪"
                 elif exit and (x, y) == exit:
-                    row += " E "
+                    row += " 🏁"
                 elif (x, y) in path_cells:
                     row += color_code + " * "
                 else:
@@ -144,7 +149,7 @@ class MazeDisplay:
     @staticmethod
     def print_ascii(maze: Maze, entry: Cell,
                     exit: Cell, show_path: bool = False, color: int = 1,
-                    col2: int = 1
+                    col2: int = 1, custom_path: list[tuple[int, int]] = None
                     ) -> None:
         """Print the ASCII representation of a maze to the terminal.
 
@@ -155,12 +160,14 @@ class MazeDisplay:
             show_path: Whether to display the shortest path.
             color: The color number used for the maze display.
         """
-        print(MazeDisplay.ascii(maze, entry, exit, show_path, color, col2))
+        print(MazeDisplay.ascii(maze, entry, exit, show_path, color, col2,
+                                custom_path))
 
     @staticmethod
     def preview(maze: Maze, entry: Cell, exit: Cell,
                 show_path: bool = False, color: int = 1,
-                col2: int = 1) -> None:
+                col2: int = 1,
+                custom_path: list[tuple[int, int]] = None) -> None:
         """Display a preview of the maze in the terminal.
 
         Args:
@@ -170,4 +177,20 @@ class MazeDisplay:
             show_path: Whether to display the shortest path.
             color: The color number used for the maze display.
         """
-        MazeDisplay.print_ascii(maze, entry, exit, show_path, color, col2)
+        MazeDisplay.print_ascii(maze, entry, exit,
+                                show_path, color, col2, custom_path)
+
+    @staticmethod
+    def animate_path(maze: Maze, entry: Cell, exit: Cell, delay: float = 0.1,
+                     color: int = 1, col2: int = 1) -> None:
+        path = bfs(maze, entry, exit)
+        if not path:
+            print("No path found!")
+            return
+        path_cells = [(cell.x, cell.y) for cell in path]
+        for i in range(len(path_cells) + 1):
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("Maze generated successfully!")
+            MazeDisplay.preview(maze, entry, exit, False, color,
+                                col2, path_cells[:i])
+            time.sleep(delay)

@@ -1,5 +1,5 @@
 import sys
-
+import os
 from mazegen.parser import ConfigParser
 from mazegen.maze import Maze
 from mazegen.generator import MazeGenerator
@@ -70,6 +70,9 @@ def main() -> None:
         return
 
     show_path = False
+    col2 = None
+    col = None
+    path_state = 0
     choice = ""
     col = 1
     col2 = 1
@@ -83,12 +86,14 @@ def main() -> None:
 5. Quit""")
 
         choice = input('\n')
-        if choice not in ['1', '2', '3', '4']:
+        if choice not in ['1', '2', '3', '4', '5']:
+            MazeDisplay.preview(maze, entry, exit, show_path, col, col2)
             print("YOUR CHOICE IS WRONG!")
             continue
 
         if choice == '1':
             maze = generator.regenerate_maze(config)
+            path_state = 0
 
             entry = maze.grid[entry_x][entry_y]
             exit = maze.grid[exit_x][exit_y]
@@ -118,7 +123,18 @@ def main() -> None:
 
         if choice == '2':
             show_path = not show_path
-            MazeDisplay.preview(maze, entry, exit, show_path, col, col2)
+            path_state = (path_state + 1) % 3
+            if path_state == 2:
+                print("Maze generated successfully!")
+                MazeDisplay.preview(maze, entry, exit, show_path, col, col2)
+                print("Path hidden")
+            elif path_state == 1:
+                print("Animating path... (press 'p' to show full path)")
+                MazeDisplay.animate_path(maze, entry, exit, delay=0.1, color=1)
+            elif path_state == 0:
+                print("Maze generated successfully!")
+                MazeDisplay.preview(maze, entry, exit, show_path, col, col2)
+                print("Showing full path")
 
         if choice == '3':
             co = input("Choose color (1-5)")
