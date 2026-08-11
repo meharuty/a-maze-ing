@@ -18,6 +18,11 @@ class MazeGenerator:
         self.carve_42_pattern()
 
     def _visit(self, cell: Cell):
+        patttern = MazeDisplay._get_42_pattern_cells(self.maze)
+        for x, y in patttern:
+            patt_cell = self.maze.get_cell(x, y)
+            patt_cell.visited = True
+
         cell.visited = True
         stack = [cell]
 

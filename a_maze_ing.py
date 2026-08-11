@@ -1,4 +1,5 @@
 import sys
+import os
 
 from maze.parser import ConfigParser
 from maze.maze import Maze
@@ -71,6 +72,7 @@ def main():
         return
 
     show_path = False
+    path_state = 0
     choice = ""
 
     while (choice != 'q'):
@@ -88,10 +90,22 @@ q - Quit""")
         if choice == 'r':
             maze = regenerate_maze(config)
             MazeDisplay.preview(maze, entry, exit)
+            path_state = 0
 
         if choice == 'p':
             show_path = not show_path
-            MazeDisplay.preview(maze, entry, exit, show_path)
+            path_state = (path_state + 1) % 3
+            if path_state == 2:
+                print("Maze generated successfully!")
+                MazeDisplay.preview(maze, entry, exit, False)
+                print("Path hidden")
+            elif path_state == 1:
+                print("Animating path... (press 'p' to show full path)")
+                MazeDisplay.animate_path(maze, entry, exit, delay=0.1, color=1)
+            elif path_state == 0:
+                print("Maze generated successfully!")
+                MazeDisplay.preview(maze, entry, exit, True)
+                print("Showing full path")
 
         if choice == 'c':
             col = int(input("Choose color (1-5)"))

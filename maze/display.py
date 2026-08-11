@@ -1,5 +1,7 @@
 from maze.cell import Cell
 from maze.solution import bfs
+import time
+import os
 
 
 class MazeDisplay:
@@ -13,9 +15,13 @@ class MazeDisplay:
     RESET = "\033[0m"
 
     @staticmethod
-    def ascii(maze, entry: Cell, exit: Cell, show_path, color=1) -> str:
+    def ascii(maze, entry: Cell, exit: Cell, show_path, color=1, custom_path=None) -> str:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("Maze generated successfully!")
         path_cells = []
-        if show_path and entry and exit:
+        if custom_path is not None:
+            path_cells = custom_path
+        elif show_path and entry and exit:
             path_cells = bfs(maze, entry, exit)
             path_cells = [(cell.x, cell.y) for cell in path_cells]
         entry = (entry.x, entry.y)
@@ -39,9 +45,9 @@ class MazeDisplay:
                         raise ValueError("Error exit in 42 pattern")
                     row += " █ "
                 elif entry and (x, y) == entry:
-                    row += " S "
+                    row += " 🚪"
                 elif exit and (x, y) == exit:
-                    row += " E "
+                    row += " 🏁"
                 elif (x, y) in path_cells:
                     row += color_code + " * "
                 else:
@@ -116,14 +122,27 @@ class MazeDisplay:
 
     @staticmethod
     def print_ascii(maze, entry: Cell,
-                    exit: Cell, show_path=False, color=1) -> None:
-        print(MazeDisplay.ascii(maze, entry, exit, show_path, color))
+                    exit: Cell, show_path=False, color=1, custom_path=None) -> None:
+        print(MazeDisplay.ascii(maze, entry, exit, show_path, color, custom_path))
 
     @staticmethod
     def preview(maze, entry: Cell, exit: Cell,
-                show_path=False, color=1) -> None:
+                show_path=False, color=1, custom_path=None) -> None:
         print("\n" + "="*50)
         print("MAZE PREVIEW")
         print("="*50)
-        MazeDisplay.print_ascii(maze, entry, exit, show_path, color)
+        MazeDisplay.print_ascii(maze, entry, exit, show_path, color, custom_path)
         print("="*50 + "\n")
+
+    @staticmethod
+    def animate_path(maze, entry: Cell, exit: Cell, delay=0.1, color=1) -> None:
+        path = bfs(maze, entry, exit)
+        if not path:
+            print("No path found!")
+            return
+        path_cells = [(cell.x, cell.y) for cell in path]
+        for i in range(len(path_cells) + 1):
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("Maze generated successfully!")
+            MazeDisplay.preview(maze, entry, exit, False, color, path_cells[:i])
+            time.sleep(delay)
