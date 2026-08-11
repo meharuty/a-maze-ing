@@ -72,6 +72,8 @@ def main():
         return
 
     show_path = False
+    col2 = None
+    col = None
     path_state = 0
     choice = ""
 
@@ -83,7 +85,7 @@ c - Change wall colour
 q - Quit""")
 
         choice = input('\n')
-        if choice not in ['r', 'p', 'c', 'q']:
+        if choice not in ['r', 'p', 'c', 'q', 'a']:
             print("YOUR CHOICE IS WRONG!")
             return
 
@@ -112,7 +114,14 @@ q - Quit""")
             if col not in [1, 2, 3, 4, 5]:
                 print("error")
                 return
-            MazeDisplay.preview(maze, entry, exit, show_path, col)
+            MazeDisplay.preview(maze, entry, exit, show_path, col, col2)
+
+        if choice == 'a':
+            col2 = int(input("Choose color (1-5)"))
+            if col2 not in [1, 2, 3, 4, 5]:
+                print("error")
+                return
+            MazeDisplay.preview(maze, entry, exit, show_path, col, col2)
 
 
 if __name__ == "__main__":
