@@ -6,6 +6,18 @@
 
 A-Maze-ing is a maze generator written in Python. The program reads a configuration file, generates a random maze, writes it to an output file in hexadecimal format, and displays it visually in the terminal. The maze can be perfect (exactly one path between entry and exit) or imperfect (multiple paths). A hidden "42" pattern is embedded in every maze as fully closed cells.
 
+The project supports two generation modes:
+Perfect maze — contains exactly one path between the entrance and the exit.
+Pac-Man mode — creates a fully connected board with multiple independent routes, reachable corners and centre, and only a small number of dead ends.
+
+The generated maze is:
+written to an output file using a hexadecimal wall representation;
+displayed visually in the terminal;
+solvable from the entry to the exit;
+reproducible when a seed is provided.
+
+The project also contains a reusable mazegen package that can be imported into another Python project.
+
 ## Instructions
 
 ### Installation
@@ -32,6 +44,11 @@ make debug
 
 ```bash
 make lint
+```
+
+### Lint-Strict
+```bash
+make lint-strict
 ```
 
 ### Clean
@@ -107,18 +124,82 @@ We chose the **Recursive Backtracker** algorithm (also known as DFS maze generat
 - Simple to implement and easy to understand
 - Naturally produces a perfect maze (one unique path between any two points)
 - Works directly on the grid structure without extra data structures
-- Reproducible with a seed via `random.Random()`
+- Reproducible with a seed via `random.Random`
 - Creates long winding corridors that look visually interesting
 - Easy to explain and justify during peer evaluation
 
 ## Reusable Module
 
-The maze generation logic is packaged as a standalone pip-installable module called `mazegen`.
+The maze-generation logic is separated into the reusable mazegen package.
+
+It can be imported into another Python project.
+
+Example:
+
+from mazegen import Maze, MazeGenerator
+
+maze = Maze(width=10, height=9)
+generator = MazeGenerator(maze=maze, seed=42)
+
+generator.generate(
+    perfect=False,
+    entry=(0, 0),
+)
+
+The generated structure can then be accessed through the maze object.
+
+For example:
+
+cell = maze.get_cell(0, 0)
+
+The generated maze can also be solved using the project's solution functionality to obtain a valid path from entry to exit.
+
+Custom parameters
+
+The generator accepts parameters such as:
+
+maze = Maze(width=20, height=15)
+
+generator = MazeGenerator(
+    maze=maze,
+    seed=123,
+)
+
+Changing the width, height, or seed allows another project to generate different mazes while keeping the same reusable generation logic.
 
 ### What is reusable
 
-The Different classes inside `Mazegen` package can be imported and used independently in any Python project.
+The reusable part of this project is the `mazegen` package.
+It contains the core maze-generation logic independently from the main
+application and configuration parser. It can be imported and used in another
+Python project without using `a_maze_ing.py`.
 
+The package provides:
+- `Maze` — represents the maze structure and provides access to its cells.
+- `Cell` — represents an individual maze cell and its walls.
+- `MazeGenerator` — generates the maze using the selected generation mode.
+- `hex_repr` — handles the hexadecimal representation of the maze.
+
+A basic example:
+
+```python
+from mazegen.maze import Maze
+from mazegen.generator import MazeGenerator
+from mazegen.display import MazeDisplay
+
+
+maze = Maze(width=10, height=9)
+
+generator = MazeGenerator(
+    maze=maze,
+    seed=42,
+)
+test = (0, 0)
+generator.generate(
+    False, test
+)
+MazeDisplay.preview(maze, maze.get_cell(0, 0), maze.get_cell(4, 4))
+```
 
 ## Team and Project Management
 
