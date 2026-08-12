@@ -21,9 +21,8 @@ class MazeDisplay:
     @staticmethod
     def ascii(maze: Maze, ent: Cell, ex: Cell,
               show_path: bool, color: int = 1, col2: int = 1,
-              custom_path: list[tuple[int, int]] = None) -> str:
-        """
-        Build and return the ASCII representation of a maze.
+              custom_path: list[tuple[int, int]] | None = None) -> str:
+        """Build and return the ASCII representation of a maze.
 
         Args:
             maze: The maze to display.
@@ -31,8 +30,11 @@ class MazeDisplay:
             ex: The exit cell.
             show_path: Whether to display the shortest path.
             color: The color number used for the maze walls and path.
+            col2: The color number used for the 42 pattern.
+            custom_path: Optional path represented by (x, y) coordinates.
+
         Returns:
-            A string containing the ASCII representation of the maze.
+            str: The ASCII representation of the maze.
         """
         os.system('cls' if os.name == 'nt' else 'clear')
         path_cells = []
@@ -57,16 +59,16 @@ class MazeDisplay:
                 cell = maze.get_cell(x, y)
                 if (x, y) in pattern_cells:
                     if entry in pattern_cells:
-                        raise ValueError("Error entry in 42 pattern")
+                        raise ValueError("Error: Entry in 42 pattern")
                     if exit in pattern_cells:
-                        raise ValueError("Error exit in 42 pattern")
+                        raise ValueError("Error: Exit in 42 pattern")
                     row += col2_code + " \u2588 "
                 elif entry and (x, y) == entry:
-                    row += " 🚪"
+                    row += " \u25B6 "
                 elif exit and (x, y) == exit:
-                    row += " 🏁"
+                    row += " \U0001F3C1"
                 elif (x, y) in path_cells:
-                    row += color_code + " * "
+                    row += col2_code + " * "
                 else:
                     row += "   "
                 row += color_code + "|" if cell.east else " "
@@ -149,7 +151,8 @@ class MazeDisplay:
     @staticmethod
     def print_ascii(maze: Maze, entry: Cell,
                     exit: Cell, show_path: bool = False, color: int = 1,
-                    col2: int = 1, custom_path: list[tuple[int, int]] = None
+                    col2: int = 1,
+                    custom_path: list[tuple[int, int]] | None = None
                     ) -> None:
         """Print the ASCII representation of a maze to the terminal.
 
@@ -167,7 +170,7 @@ class MazeDisplay:
     def preview(maze: Maze, entry: Cell, exit: Cell,
                 show_path: bool = False, color: int = 1,
                 col2: int = 1,
-                custom_path: list[tuple[int, int]] = None) -> None:
+                custom_path: list[tuple[int, int]] | None = None) -> None:
         """Display a preview of the maze in the terminal.
 
         Args:
@@ -176,6 +179,8 @@ class MazeDisplay:
             exit: The exit cell.
             show_path: Whether to display the shortest path.
             color: The color number used for the maze display.
+            col2: The color number used for the 42 pattern.
+            custom_path: Optional path represented by (x, y) coordinates.
         """
         MazeDisplay.print_ascii(maze, entry, exit,
                                 show_path, color, col2, custom_path)
@@ -183,6 +188,16 @@ class MazeDisplay:
     @staticmethod
     def animate_path(maze: Maze, entry: Cell, exit: Cell, delay: float = 0.1,
                      color: int = 1, col2: int = 1) -> None:
+        """Animate the solution path through the maze.
+
+        Args:
+            maze: The maze to display.
+            entry: The entrance cell.
+            exit: The exit cell.
+            delay: The delay in seconds between animation frames.
+            color: The color number used for the maze display.
+            col2: The color number used for the 42 pattern.
+        """
         path = bfs(maze, entry, exit)
         if not path:
             print("No path found!")

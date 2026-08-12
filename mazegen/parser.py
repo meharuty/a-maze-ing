@@ -28,7 +28,7 @@ class ConfigParser:
         file_path = Path(self.filename)
 
         if not (file_path.is_file()):
-            raise FileNotFoundError
+            raise FileNotFoundError("File path isn't found")
 
         with open(self.filename) as file:
             lines = file.readlines()
@@ -66,7 +66,7 @@ class ConfigParser:
                 raise ValueError("Duplicate key")
             dc[key] = value
         if not dc["OUTPUT_FILE"]:
-            raise FileExistsError  # maybe I will find better erropr kind
+            raise ValueError("OUTPUT_FILE must be in configuration file")
 
         return dc
 
@@ -112,7 +112,7 @@ class ConfigParser:
             ValueError: If a configuration value has an invalid format."""
         dc = self.parse_dict()
         if not (self.validate_dict(dc)):
-            raise ValueError  # need to be validation error from pydantic
+            raise ValueError("Wrong keys are given or some missing keys")
 
         for key, value in dc.items():
             if key in ("WIDTH", "HEIGHT", "SEED"):

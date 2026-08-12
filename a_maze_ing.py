@@ -1,5 +1,4 @@
 import sys
-import os
 from mazegen.parser import ConfigParser
 from mazegen.maze import Maze
 from mazegen.generator import MazeGenerator
@@ -22,9 +21,6 @@ def main() -> None:
     except ValueError as error:
         print(f"Error: {error}")
         return
-    except FileExistsError as error:
-        print(f"Error: {error}")
-        return
 
     maze = Maze(config["WIDTH"], config["HEIGHT"])
     generator = MazeGenerator(maze, config["SEED"])
@@ -33,8 +29,6 @@ def main() -> None:
     if not generator.validate_dfs():
         print("Generation failed.")
         return
-
-    print("Maze generated successfully!")
 
     entry_x, entry_y = config["ENTRY"]
     exit_x, exit_y = config["EXIT"]
@@ -130,7 +124,8 @@ def main() -> None:
                 print("Path hidden")
             elif path_state == 1:
                 print("Animating path... (press 'p' to show full path)")
-                MazeDisplay.animate_path(maze, entry, exit, delay=0.1, color=1)
+                MazeDisplay.animate_path(maze, entry, exit, delay=0.1,
+                                         color=col, col2=col2)
             elif path_state == 0:
                 print("Maze generated successfully!")
                 MazeDisplay.preview(maze, entry, exit, show_path, col, col2)

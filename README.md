@@ -117,7 +117,7 @@ The maze generation logic is packaged as a standalone pip-installable module cal
 
 ### What is reusable
 
-The `MazeGenerator` class inside `generator.py` can be imported and used independently in any Python project.
+The Different classes inside `Mazegen` package can be imported and used independently in any Python project.
 
 
 ## Team and Project Management
