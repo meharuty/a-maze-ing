@@ -1,1 +1,4 @@
 __pycache__
+dist
+maze.txt
+maze_analyzer.py

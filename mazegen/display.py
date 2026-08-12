@@ -204,8 +204,7 @@ class MazeDisplay:
             return
         path_cells = [(cell.x, cell.y) for cell in path]
         for i in range(len(path_cells) + 1):
-            os.system('cls' if os.name == 'nt' else 'clear')
-            print("Maze generated successfully!")
+            # os.system('cls' if os.name == 'nt' else 'clear')
             MazeDisplay.preview(maze, entry, exit, False, color,
                                 col2, path_cells[:i])
             time.sleep(delay)
