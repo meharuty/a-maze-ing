@@ -21,6 +21,9 @@ def main() -> None:
     except ValueError as error:
         print(f"Error: {error}")
         return
+    except KeyError as error:
+        print(f"Error: {error}")
+        return
 
     maze = Maze(config["WIDTH"], config["HEIGHT"])
     generator = MazeGenerator(maze, config["SEED"])
@@ -78,6 +81,9 @@ def main() -> None:
 3. Rotate the wall colours
 4. Rotate the 42 pattern colours
 5. Quit""")
+
+        if config["WIDTH"] < 14 or config["HEIGHT"] < 10:
+            print("Warning: Maze is to small for 42 pattern!")
 
         choice = input('\n')
         if choice not in ['1', '2', '3', '4', '5']:

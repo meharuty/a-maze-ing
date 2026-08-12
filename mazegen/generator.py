@@ -376,7 +376,6 @@ class MazeGenerator:
 
         pattern_cells = MazeDisplay._get_42_pattern_cells(self.maze)
         if not pattern_cells:
-            print("Warning: Maze too small for '42' pattern - skipping")
             return
         for x, y in pattern_cells:
             cell = self.maze.get_cell(x, y)

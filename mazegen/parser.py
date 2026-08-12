@@ -66,7 +66,7 @@ class ConfigParser:
                 raise ValueError("Duplicate key")
             dc[key] = value
         if not dc["OUTPUT_FILE"]:
-            raise ValueError("OUTPUT_FILE must be in configuration file")
+            raise KeyError("OUTPUT_FILE must be in configuration file")
 
         return dc
 
